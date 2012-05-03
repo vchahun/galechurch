@@ -63,11 +63,15 @@ def moves(i, j):
     if i > 0 and j > 0: yield (-1, -1)
     if i > 1 and j > 0: yield (-2, -1)
     if i > 0 and j > 1: yield (-1, -2)
+    if i > 1 and j > 1: yield (-2, -2)
 
 def cost(x, y, i, j, di, dj):
     lx, ly = sum(x[i+di:i]), sum(y[j+dj:j])
     m = (lx + ly * mean_xy)/2
-    delta = (lx - ly * mean_xy)/math.sqrt(m * variance_xy)
+    try:
+        delta = (lx - ly * mean_xy)/math.sqrt(m * variance_xy)
+    except ZeroDivisionError:
+        return float('-inf')
     length_cost = - 100 * (LOG2 + norm_logsf(abs(delta))) # -100*log[p(|N(0, 1)|>delta)]
     return bead_cost[di, dj] + length_cost
 
